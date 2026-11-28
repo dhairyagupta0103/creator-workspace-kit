@@ -3,12 +3,14 @@
 {{PROJECT_SUMMARY}}
 
 ## Preview
-The workspace preview workflow packages this project and shared utilities in a downloadable ZIP artifact. Extract it once and open the artifact's `index.html` to choose a project. This is not a hosted browser preview. A shell-enabled agent may also run the project locally.
+Push this project on a work/<id>/<task> or experiment/<id>/<task> branch. When Cloudflare Pages is connected, the branch receives a hosted preview URL that updates with each push. The project is served at /projects/<id>/ in the preview site. GitHub Actions also creates a diagnostic ZIP, but that is not the creator-facing preview.
 
-## Files
-- `project.json`: structured metadata.
-- `PROGRESS.md`: resume point for the next session.
-- `CHANGELOG.md`: meaningful completed changes.
-- `assets/`: project-owned files.
+## Runtime files
+- index.html, styles.css, app.js: browser app.
+- assets/: project-owned static assets.
+- functions/ (optional): Cloudflare Pages Functions for server-side routes. Files are deployed beneath /projects/<id>/.
+- project.json: structured metadata.
+- PROGRESS.md: resume point for the next session.
+- CHANGELOG.md: meaningful completed changes.
 
-Keep the project self-contained where practical. Reuse `shared/` for common helpers.
+Browser API calls are supported subject to the API's CORS and access rules. Never put private API keys or credentials in browser code or Git. Configure server-side secrets only in the hosting provider's environment settings, with trusted adult help.
