@@ -55,8 +55,8 @@ jobs:
           </style></head><body><main><h1>Project Preview</h1><p>Unreleased workspace preview. This folder is a temporary build artifact.</p><ul>""" + "".join(cards) + """</ul></main></body></html>"""
           Path("preview/index.html").write_text(page, encoding="utf-8")
           Path("preview/README.md").write_text(
-              "# Project preview\\n\\nExtract this artifact once, then open `index.html` in a browser. "
-              "Each project is listed on the preview home page. This is an unreleased build, not a public portfolio release.\\n",
+              "# Project preview\n\nExtract this artifact once, then open `index.html` in a browser. "
+              "Each project is listed on the preview home page. This is an unreleased build, not a public portfolio release.\n",
               encoding="utf-8"
           )
           PY
