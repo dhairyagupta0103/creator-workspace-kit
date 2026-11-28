@@ -3,7 +3,7 @@
 {{PROJECT_SUMMARY}}
 
 ## Preview
-The workspace preview workflow packages this project and shared utilities in a downloadable ZIP artifact. The artifact is not a hosted browser preview. A shell-enabled agent may also run the project locally.
+The workspace preview workflow packages this project and shared utilities in a downloadable ZIP artifact. Extract it once and open the artifact's `index.html` to choose a project. This is not a hosted browser preview. A shell-enabled agent may also run the project locally.
 
 ## Files
 - `project.json`: structured metadata.
