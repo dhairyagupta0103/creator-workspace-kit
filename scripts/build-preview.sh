@@ -12,10 +12,21 @@ for project_dir in projects/*; do
   mkdir -p "_preview/projects/$project_id"
   cp -R "$project_dir/." "_preview/projects/$project_id/"
   if [ -d "$project_dir/functions" ]; then
+    outside_api="$(find "$project_dir/functions" -type f ! -path "$project_dir/functions/api/*" -print -quit)"
+    if [ -n "$outside_api" ]; then
+      echo "Pages Functions must be placed under $project_dir/functions/api/ (found $outside_api)"
+      exit 1
+    fi
     mkdir -p "_preview/functions/projects/$project_id"
     cp -R "$project_dir/functions/." "_preview/functions/projects/$project_id/"
   fi
 done
+
+if find _preview/functions -type f -print -quit | grep -q .; then
+  cat > _preview/_routes.json <<'JSON'
+{"version":1,"include":["/projects/*/api","/projects/*/api/*"],"exclude":[]}
+JSON
+fi
 
 python3 - <<'PY'
 from html import escape
