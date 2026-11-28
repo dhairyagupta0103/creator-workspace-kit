@@ -1,16 +1,22 @@
 # Release requests
 
-Add one new JSON file per release request, named `<project-id>-v<version>.json`.
+Add one new JSON file per release request, named <project-id>-v<version>.json.
 
-Example:
+Example for a tagged release that is not yet public:
 
-```json
-{
-  "project_id": "sample-project",
-  "version": "1.0.0"
-}
-```
+    {
+      "project_id": "sample-project",
+      "version": "1.0.0"
+    }
 
-Include the request in the completed project PR alongside the matching `project.json` version update. When that PR is merged to `main`, the release-tag workflow creates `project/<project-id>/v<version>` on the merge commit.
+Example for a release that should also be selected on the public portfolio:
 
-Requests are append-only. Never edit, rename or delete a merged request, and never reuse a version tag. The workflow refuses to overwrite an existing tag. After the workflow succeeds, verify the tag before selecting it in `portfolio/portfolio.json`.
+    {
+      "project_id": "sample-project",
+      "version": "1.0.0",
+      "publish": true
+    }
+
+Include the request in the completed project PR alongside the matching project.json version update. When merged to main, GitHub Actions creates immutable tag project/<project-id>/v<version>. If and only if publish is true, the same workflow updates portfolio/portfolio.json to select the new tag. A follow-up Pages workflow publishes that selection.
+
+Requests are append-only. Never edit, rename or delete a merged request, and never reuse a version tag. The workflow refuses to overwrite an existing tag. Public publication should be explicitly requested and reviewed before the PR is merged.
