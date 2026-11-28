@@ -33,7 +33,7 @@ jobs:
           cd "$temp_dir"
           node scripts/create-project.mjs sample-project "Sample Project" "Temporary validation fixture" learning
           mkdir -p projects/sample-project/functions/api
-          printf 'export function onRequest() { return new Response("ok"); }\\n' > projects/sample-project/functions/api/health.js
+          printf '%s' 'export function onRequest() { return new Response("ok"); }' > projects/sample-project/functions/api/health.js
           git init -q
           git config user.name "Workspace CI"
           git config user.email "ci@example.invalid"
