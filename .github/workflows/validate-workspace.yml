@@ -17,11 +17,11 @@ jobs:
         with:
           node-version: 22
       - name: Validate current workspace
-        run: node scripts/validate-workspace.mjs
+        run: |\n          node scripts/validate-workspace.mjs\n          node scripts/validate-backend.mjs
       - name: Check scripts and build
         run: |
           node --check scripts/create-project.mjs
-          node --check scripts/validate-workspace.mjs
+          node --check scripts/validate-workspace.mjs\n          node --check scripts/validate-backend.mjs
           bash -n scripts/build-pages.sh
           bash -n scripts/build-preview.sh
           bash -n scripts/create-release-tags.sh
@@ -29,7 +29,7 @@ jobs:
       - name: Test project creation, production build and hosted preview build
         run: |
           temp_dir="$(mktemp -d)"
-          cp -R projects starter portfolio creator shared assets content images scripts index.html "$temp_dir/"
+          cp -R projects starter portfolio creator shared assets content images scripts index.html supabase governance "$temp_dir/"
           cd "$temp_dir"
           node scripts/create-project.mjs sample-project "Sample Project" "Temporary validation fixture" learning
           mkdir -p projects/sample-project/functions/api
