@@ -17,7 +17,7 @@ A GitHub template for a small, single-creator workspace. Use it with an AI codin
 - GitHub Actions for validation, downloadable preview artifacts, release-tag creation and Pages publishing
 
 ## Preview and publishing
-- The branch-preview workflow packages project files and shared utilities as a downloadable ZIP. It is **not** a hosted browser preview.
+- The branch-preview workflow packages project files and shared utilities as a downloadable ZIP. Extract it once and open its `index.html` to choose a project. It is **not** a hosted browser preview.
 - The public portfolio is deployed by GitHub Pages after pushes to `main`, using only the exact release tags selected in `portfolio/portfolio.json`.
 - GitHub Pages is public. A hidden portfolio entry does **not** hide source files in a public repository.
 - The Pages workflow requires the repository's Pages publishing source to be set to **GitHub Actions**. An AI integration may not have access to inspect or change this account-level setting.
