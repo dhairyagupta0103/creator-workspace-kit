@@ -27,7 +27,8 @@ Identify whether this session can read/write repository files, run a shell, insp
 - Configure Cloudflare Pages Git integration once per workspace repository; see governance/PREVIEW_HOSTING.md.
 - Pushes to configured work/* and experiment/* branches automatically create/update hosted preview deployments. No PR is needed to try a project.
 - The preview build uses scripts/build-preview.sh and publishes all projects in that branch beneath /projects/<id>/.
-- Optional projects/<id>/functions/ files become Pages Functions under that project's route prefix. Browser API calls work as ordinary client-side calls; secrets belong only in the hosting provider's environment settings.
+- Optional Pages Functions belong under projects/<id>/functions/api/ and are routed beneath /projects/<id>/api/. The generated route filter keeps static files outside Functions execution.
+- Browser API calls work when the remote API permits them. Secrets belong only in separate preview/production hosting-provider settings.
 - Preview URLs are public unless access protection is configured. Never use real personal data or secrets.
 - GitHub Actions' ZIP is diagnostic only, not the creator-facing preview.
 - PR and push events run workspace validation. Inspect Actions runs/logs when available; never infer success from an empty response.
