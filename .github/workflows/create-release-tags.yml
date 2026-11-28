@@ -1,0 +1,23 @@
+name: Create release tags
+on:
+  push:
+    branches: [main]
+    paths:
+      - "releases/requests/**"
+permissions:
+  contents: write
+concurrency:
+  group: release-tags
+  cancel-in-progress: false
+jobs:
+  create-tags:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Create tags for newly added release requests
+        env:
+          GITHUB_EVENT_BEFORE: ${{ github.event.before }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: bash scripts/create-release-tags.sh
