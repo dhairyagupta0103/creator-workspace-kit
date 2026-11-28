@@ -2,6 +2,10 @@ name: Publish workspace and selected releases
 on:
   push:
     branches: [main]
+  workflow_run:
+    workflows: ["Create release tags"]
+    types: [completed]
+    branches: [main]
 permissions:
   contents: read
   pages: write
@@ -11,10 +15,12 @@ concurrency:
   cancel-in-progress: true
 jobs:
   build:
+    if: github.event_name == 'push' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: main
           fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
@@ -26,6 +32,7 @@ jobs:
         with:
           path: _site
   deploy:
+    if: github.event_name == 'push' || github.event.workflow_run.conclusion == 'success'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

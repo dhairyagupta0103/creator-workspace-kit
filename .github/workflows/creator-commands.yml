@@ -1,0 +1,33 @@
+name: Creator commands
+on:
+  issue_comment:
+    types: [created]
+permissions:
+  contents: read
+  pull-requests: write
+jobs:
+  ready:
+    if: github.event.issue.pull_request == null && github.event.comment.user.login == github.repository_owner && startsWith(github.event.comment.body, '/ready ')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Open one review PR for the ready branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMMENT_BODY: ${{ github.event.comment.body }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          branch="${COMMENT_BODY#/ready }"
+          branch="${branch%%$'\n'*}"
+          if [[ ! "$branch" =~ ^(work|experiment)/[a-z0-9]+(-[a-z0-9]+)*/[a-z0-9]+(-[a-z0-9]+)*$ ]]; then
+            echo "Use /ready work/project-id/task-name or /ready experiment/project-id/task-name"
+            exit 1
+          fi
+          existing="$(gh pr list --repo "$REPOSITORY" --head "$branch" --base main --state open --json url --jq '.[0].url // empty')"
+          if [ -n "$existing" ]; then
+            echo "A review PR already exists: $existing"
+            exit 0
+          fi
+          gh pr create --repo "$REPOSITORY" --head "$branch" --base main \
+            --title "Review: $branch" \
+            --body "Creator marked this branch ready for review. Please inspect the changes and checks. This workflow does not merge or publish the branch."
