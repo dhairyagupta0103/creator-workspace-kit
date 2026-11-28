@@ -1,6 +1,6 @@
 # Versions and portfolio
 
-Use `MAJOR.MINOR.PATCH`:
+Use MAJOR.MINOR.PATCH:
 - PATCH: fix or correction.
 - MINOR: compatible feature or meaningful improvement.
 - MAJOR: substantial redesign or breaking change.
@@ -9,13 +9,15 @@ Do not version every commit. A version is a completed milestone.
 
 ## Release
 1. Complete work on its branch.
-2. Update `project.json` and `CHANGELOG.md`.
-3. Add a new request file named `releases/requests/<id>-v<version>.json`, containing the project ID and version.
-4. Open the PR. After review, the owner merges it.
-5. The `Create release tags` workflow creates immutable tag `project/<id>/v<version>` on the merge commit. It refuses to overwrite an existing tag.
-6. Verify the tag exists before using it. If the workflow fails, fix the request or repository permissions; do not create a replacement tag by moving an existing one.
+2. Update project.json and CHANGELOG.md.
+3. Add a new request file named releases/requests/<id>-v<version>.json.
+4. Include publish: true only if this release should appear on the public portfolio. Omit it or set false for a tagged release that is not selected publicly.
+5. Open one PR. After review, the owner merges it.
+6. The release workflow creates immutable tag project/<id>/v<version> on the merge commit.
+7. If publish is true, the workflow updates portfolio/portfolio.json to select this tag and triggers a follow-up Pages deployment. This portfolio-only update is an automation exception; it does not alter project source or rewrite history.
+8. Verify the tag, portfolio selection and deployment before claiming publication.
 
-The request file is a durable release record. Never edit or delete a request after it has been merged. A correction requires a new patch version and a new request file.
+Requests are append-only. Never edit, rename or delete a merged request, and never reuse a version tag. The workflow refuses to overwrite an existing tag. A correction requires a new patch version and request file.
 
 ## Portfolio
-`portfolio/portfolio.json` selects exact project tags. Change it only when public publication is explicitly requested, through a normal branch and PR after the tag exists. A portfolio rollback changes the selected tag; it does not reset `main` or rewrite project files.
+portfolio/portfolio.json selects exact project tags. Normal release requests with publish true update the selected tag automatically. For a manual portfolio correction or rollback, use a normal branch and PR; do not reset main or rewrite project files.
