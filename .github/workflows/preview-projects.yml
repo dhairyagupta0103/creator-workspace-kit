@@ -13,7 +13,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Package project folders
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate workspace
+        run: node scripts/validate-workspace.mjs
+      - name: Assemble preview folder
         run: |
           mkdir -p preview/projects
           for project in projects/*; do
@@ -23,9 +30,38 @@ jobs:
             cp -R "$project" "preview/projects/$slug"
           done
           cp -R shared preview/shared
-          zip -r project-preview.zip preview
+          python3 - <<'PY'
+          from html import escape
+          from pathlib import Path
+          import json
+          import re
+
+          cards = []
+          for metadata_path in sorted(Path("preview/projects").glob("*/project.json")):
+              project = json.loads(metadata_path.read_text(encoding="utf-8"))
+              project_id = metadata_path.parent.name
+              if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", project_id):
+                  raise SystemExit(f"Invalid project ID: {project_id}")
+              title = escape(str(project.get("title", project_id)))
+              summary = escape(str(project.get("summary", "")))
+              href = f"projects/{project_id}/index.html"
+              cards.append(f'<li><a href="{escape(href, quote=True)}">{title}</a><p>{summary}</p></li>')
+
+          page = """<!doctype html>
+          <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+          <title>Project Preview</title><style>
+          body{font:16px system-ui,sans-serif;max-width:760px;margin:48px auto;padding:0 20px;color:#202938;background:#f4f6fa}
+          main{background:white;padding:32px;border-radius:18px}li{margin:18px 0}a{color:#24548a;font-weight:700}p{color:#596579}
+          </style></head><body><main><h1>Project Preview</h1><p>Unreleased workspace preview. This folder is a temporary build artifact.</p><ul>""" + "".join(cards) + """</ul></main></body></html>"""
+          Path("preview/index.html").write_text(page, encoding="utf-8")
+          Path("preview/README.md").write_text(
+              "# Project preview\\n\\nExtract this artifact once, then open `index.html` in a browser. "
+              "Each project is listed on the preview home page. This is an unreleased build, not a public portfolio release.\\n",
+              encoding="utf-8"
+          )
+          PY
       - uses: actions/upload-artifact@v4
         with:
           name: project-preview-${{ github.sha }}
-          path: project-preview.zip
+          path: preview/
           retention-days: 14
