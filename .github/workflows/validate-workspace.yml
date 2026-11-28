@@ -32,6 +32,8 @@ jobs:
           cp -R projects starter portfolio creator shared assets content images scripts index.html "$temp_dir/"
           cd "$temp_dir"
           node scripts/create-project.mjs sample-project "Sample Project" "Temporary validation fixture" learning
+          mkdir -p projects/sample-project/functions/api
+          printf 'export function onRequest() { return new Response("ok"); }\\n' > projects/sample-project/functions/api/health.js
           git init -q
           git config user.name "Workspace CI"
           git config user.email "ci@example.invalid"
@@ -46,6 +48,8 @@ jobs:
           bash scripts/build-preview.sh
           test -s _preview/index.html
           test -s _preview/projects/sample-project/index.html
+          test -s _preview/functions/projects/sample-project/api/health.js
+          jq -e '.include | index("/projects/*/api/*")' _preview/_routes.json >/dev/null
       - name: Test immutable, idempotent and publish release automation
         run: |
           workspace_root="$GITHUB_WORKSPACE"
