@@ -3,7 +3,7 @@
 {{PROJECT_SUMMARY}}
 
 ## Preview
-Open `index.html` with a local static server or use the branch preview artifact.
+The workspace preview workflow packages this project and shared utilities in a downloadable ZIP artifact. The artifact is not a hosted browser preview. A shell-enabled agent may also run the project locally.
 
 ## Files
 - `project.json`: structured metadata.
