@@ -24,7 +24,7 @@ The script assembles all projects from the current branch:
 - The workspace launcher is at the preview root.
 - Each app is served at /projects/<project-id>/.
 - Shared browser utilities are copied to /shared/.
-- Optional project server functions from projects/<project-id>/functions/ are copied to the Pages Functions route prefix /projects/<project-id>/.
+- Optional server functions from projects/<project-id>/functions/api/ are copied to the Pages Functions route prefix /projects/<project-id>/api/.
 
 A preview contains the branch's current code, not a screenshot or a ZIP. Keep personal information, credentials and private data out of the repository and preview. A public repository means its branches and preview deployments may be discoverable.
 
@@ -32,7 +32,9 @@ A preview contains the branch's current code, not a screenshot or a ZIP. Keep pe
 
 - Static: HTML, CSS, JavaScript and assets.
 - API client: browser-side calls to APIs that permit browser access. Any key embedded in browser code is public.
-- Server endpoints: Pages Functions can provide server-side routes. Configure secrets in the provider's environment settings, never in Git or browser code. Use test data and preview-only credentials.
+- Server endpoints: put Pages Functions under projects/<project-id>/functions/api/. The build maps them beneath /projects/<project-id>/api/ and generates a route filter so ordinary static assets are not sent through Functions. Configure separate preview and production secrets in the provider's environment settings, never in Git or browser code. Use test data and preview-only credentials.
+
+Cloudflare Pages Functions can run server-side code without a dedicated server, and the provider supports environment-specific bindings and secrets. See the official [Functions guide](https://developers.cloudflare.com/pages/functions/) and [Bindings guide](https://developers.cloudflare.com/pages/functions/bindings/).
 
 The diagnostic ZIP produced by GitHub Actions is a fallback for agent inspection. It is not the hosted preview.
 
