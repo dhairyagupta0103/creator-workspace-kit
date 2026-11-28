@@ -51,12 +51,12 @@ jobs:
           git config user.name "Workspace CI"
           git config user.email "ci@example.invalid"
           mkdir -p projects/sample-project
-          printf '{"id":"sample-project","current_version":"1.2.3"}\\n' > projects/sample-project/project.json
+          printf '{"id":"sample-project","current_version":"1.2.3"}\n' > projects/sample-project/project.json
           git add .
           git commit -m "fixture project"
           before="$(git rev-parse HEAD)"
           mkdir -p releases/requests
-          printf '{"project_id":"sample-project","version":"1.2.3"}\\n' > releases/requests/sample-project-v1.2.3.json
+          printf '{"project_id":"sample-project","version":"1.2.3"}\n' > releases/requests/sample-project-v1.2.3.json
           git add .
           git commit -m "request fixture release"
           after="$(git rev-parse HEAD)"
