@@ -45,3 +45,10 @@ Identify whether this session can read/write repository files, run a shell, insp
 - State only checks actually run.
 - Report branch, preview URL, check status and next step. Distinguish hosted previews, ZIP artifacts and public releases.
 - Do not merge a PR without explicit approval.
+
+## 5a. Shared backend
+- Read governance/BACKEND_STANDARD.md before backend work.
+- Supabase Auth owns identities; PostgreSQL RLS enforces app and owner isolation.
+- Preview builds use the development backend with synthetic data only. Production uses a separate backend project and secrets.
+- Never put service-role keys or database passwords in Git, browser code or chat.
+- Validate migrations with pgTAP and Supabase advisors against development before production rollout.
