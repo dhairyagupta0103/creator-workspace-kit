@@ -23,9 +23,10 @@ jobs:
           node --check scripts/create-project.mjs
           node --check scripts/validate-workspace.mjs
           bash -n scripts/build-pages.sh
+          bash -n scripts/build-preview.sh
           bash -n scripts/create-release-tags.sh
           bash scripts/build-pages.sh
-      - name: Test project creation and release assembly
+      - name: Test project creation, production build and hosted preview build
         run: |
           temp_dir="$(mktemp -d)"
           cp -R projects starter portfolio creator shared assets content images scripts index.html "$temp_dir/"
@@ -42,7 +43,10 @@ jobs:
           bash scripts/build-pages.sh
           test -s _site/projects/sample-project/index.html
           test -s _site/projects/sample-project/project.json
-      - name: Test immutable release tag helper
+          bash scripts/build-preview.sh
+          test -s _preview/index.html
+          test -s _preview/projects/sample-project/index.html
+      - name: Test immutable and idempotent release tag helper
         run: |
           workspace_root="$GITHUB_WORKSPACE"
           temp_dir="$(mktemp -d)"
@@ -51,7 +55,8 @@ jobs:
           git config user.name "Workspace CI"
           git config user.email "ci@example.invalid"
           mkdir -p projects/sample-project
-          printf '{"id":"sample-project","current_version":"1.2.3"}\n' > projects/sample-project/project.json
+          printf '{"id":"sample-project","current_version":"1.2.3","title":"Sample","summary":"Test","category":"learning"}\n' > projects/sample-project/project.json
+          printf '{"schema_version":1,"projects":[]}\n' > portfolio/portfolio.json
           git add .
           git commit -m "fixture project"
           before="$(git rev-parse HEAD)"
@@ -65,8 +70,13 @@ jobs:
           git push -q origin HEAD:main
           GITHUB_EVENT_BEFORE="$before" GITHUB_SHA="$after" bash "$workspace_root/scripts/create-release-tags.sh"
           git --git-dir="$temp_dir/remote.git" show-ref --verify --quiet refs/tags/project/sample-project/v1.2.3
-          if GITHUB_EVENT_BEFORE="$before" GITHUB_SHA="$after" bash "$workspace_root/scripts/create-release-tags.sh"; then
-            echo "Expected duplicate tag creation to fail."
+          GITHUB_EVENT_BEFORE="$before" GITHUB_SHA="$after" bash "$workspace_root/scripts/create-release-tags.sh"
+          printf 'retry fixture\n' > retry.txt
+          git add retry.txt
+          git commit -m "later commit"
+          later="$(git rev-parse HEAD)"
+          if GITHUB_EVENT_BEFORE="$before" GITHUB_SHA="$later" bash "$workspace_root/scripts/create-release-tags.sh"; then
+            echo "Expected an existing tag on a different commit to be rejected."
             exit 1
           fi
       - uses: actions/upload-artifact@v4
