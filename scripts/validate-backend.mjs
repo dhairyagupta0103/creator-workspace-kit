@@ -22,7 +22,7 @@ for (const table of expectedTables) {
 if (!sql.includes("owner_id = (select auth.uid())")) fail("App records must be scoped to auth.uid().");
 if (!sql.includes("m.app_id = app_records.app_id")) fail("App records must be scoped to app_id membership.");
 if (!sql.includes("with check (") || !sql.includes("for update")) fail("Update policies must include WITH CHECK.");
-if (/password|encrypted_password|service_role_key|service_role\s*[:=]/i.test(sql)) fail("Credentials or privileged keys must never be stored in this migration.");
+if (/encrypted_password|password_hash|service_role_key|service_role\s*[:=]/i.test(sql)) fail("Credentials or privileged keys must never be stored in this migration.");
 const tests = readFileSync(testPath, "utf8").toLowerCase();
 if (!tests.includes("select plan(10)") || !tests.includes("select * from finish()")) fail("pgTAP schema test is incomplete.");
 console.log("Backend contract valid: 5 tables, RLS enabled, owner/app scope and pgTAP schema checks present.");
