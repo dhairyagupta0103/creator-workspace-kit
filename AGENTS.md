@@ -32,7 +32,9 @@ Use maintenance/<task> for instructions, templates, schemas, scripts, shared cod
 - Never commit directly to main; never force-push.
 - Continue a matching branch or start from latest suitable main.
 - Every push to a configured work/* or experiment/* branch triggers a hosted Cloudflare Pages preview when the repository has been connected. The same branch preview URL updates as new commits arrive.
-- Preview builds include all project folders from that branch. Each app is served under /projects/<id>/; optional server endpoints are copied from projects/<id>/functions/ to Pages Functions routes under /projects/<id>/.
+- Preview builds include all project folders from that branch. Each app is served under /projects/<id>/.
+- Optional server endpoints must be placed in projects/<id>/functions/api/; the build maps them to Pages Functions under /projects/<id>/api/ and filters function invocations to those API routes.
+- Browser API calls are supported when the remote API permits browser access. Never put private keys in browser code.
 - The hosted preview is public unless access protection has been configured. Do not put personal details, private data or credentials in it.
 - The GitHub Actions ZIP is diagnostic only; do not present it as the creator's preview.
 - If Cloudflare is not configured, report that hosted preview is unavailable and provide the diagnostic artifact only if it exists. Never invent a preview URL.
