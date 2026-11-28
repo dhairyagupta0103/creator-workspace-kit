@@ -41,3 +41,7 @@ The diagnostic ZIP produced by GitHub Actions is a fallback for agent inspection
 ## Troubleshooting
 
 If no hosted URL appears, check the Pages Git integration, branch-control allowlist, build output directory and latest deployment log in the provider dashboard. Do not claim a hosted preview exists until its URL is visible and the app has been opened successfully.
+
+## Supabase backend
+
+The shared backend standard is documented in governance/BACKEND_STANDARD.md. Branch previews must use the development Supabase project and synthetic accounts only. Configure only the project URL and publishable key as browser-visible settings. Production uses a separate Supabase project and separate environment variables. Do not put secrets in Git, preview artifacts or browser code.
