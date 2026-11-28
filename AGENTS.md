@@ -58,3 +58,11 @@ Use maintenance/<task> for instructions, templates, schemas, scripts, shared cod
 
 ## Finish
 Save progress on the active branch. Report what changed, checks actually run, branch, hosted preview/PR link and next step. Distinguish a hosted preview, diagnostic ZIP and public release.
+
+## Shared backend
+- Read governance/BACKEND_STANDARD.md before adding authentication, user data or server functionality.
+- Use one Supabase project per creator workspace, shared across that workspace's apps; never one database per app or one shared database for unrelated creators.
+- Supabase Auth owns credentials and sessions. Do not build a password table.
+- Use app_id plus auth.uid()-derived owner_id and database RLS for app/user data isolation.
+- Branch previews use development Supabase credentials and synthetic data only; production uses a separate project when provisioned.
+- Never expose service-role/secret keys. Do not create paid resources or database branches without checking costs and getting confirmation.
